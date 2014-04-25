@@ -1,0 +1,43 @@
+#!/bin/sh
+
+if [ ! -f conf.sh ]; then
+ echo "conf.sh file not found, are you running in root dir ?"
+ exit 1
+fi
+
+. ./conf.sh
+
+PGSQL="psql -d $DB_TARGET"
+
+SQL_DIR="sql"
+LOCAL_DIR="local"
+
+echo $CWD
+ 
+if [ ! -f $LOCAL_DIR/epidb_results.custom ]; then
+ echo "Unable to find epidb dump in local/ dir. Did you run bin/download ?"
+ exit 1
+fi
+
+echo "Cleaning up"
+$PGSQL < $SQL_DIR/import/cleanup_db.sql
+
+echo "Restoring Database"
+pg_restore -Fc -C -x -O -d $DB_TARGET < $LOCAL_DIR/epidb_results.custom
+
+echo "Creating id primary key"
+$PGSQL <  $SQL_DIR/import/add_epidb_key.sql
+
+echo "Creating survey_surveyuser table"
+$PGSQL <  $SQL_DIR/import/create_surveyuser.sql
+
+echo "Updating Health status Views"
+
+$PGSQL <  $SQL_DIR/import/health_status.sql
+
+if [ -f  $LOCAL_DIR/post-import ]; then
+ echo "running post-install hooks"
+ . $LOCAL_DIR/post-import
+fi
+
+echo "Import done."

@@ -1,0 +1,11 @@
+#!/bin/sh
+set -e
+if [ ! -f conf.sh ]; then
+ echo "conf.sh file not found, are you running in root dir ?"
+ exit 1
+fi
+
+. ./conf.sh
+
+scp $EPIDB_USER@epidb.influenzanet.eu:/home/epidb/data/epidb_results.custom local/
+
