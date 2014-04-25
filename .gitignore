@@ -4,6 +4,7 @@
 *~
 .DS_Store
 .project
+local/
 lib64/
 .settings/
 .pydevproject
