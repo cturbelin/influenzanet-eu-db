@@ -1,0 +1,9 @@
+*.pyc
+*.pyo
+*.userprefs
+*~
+.DS_Store
+.project
+lib64/
+.settings/
+.pydevproject
