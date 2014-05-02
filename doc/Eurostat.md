@@ -1,7 +1,7 @@
-Import Geographic levels & Population data form EuroStat
+Import Geographic levels & Population data from EuroStat
 =========================================================
 
-* Extract NUTS 2 levels & save it as CSV files ";" separaor
+* Extract NUTS 2 levels & save it as CSV files using ";" separator
 
 Expected columns are
 
@@ -11,13 +11,13 @@ Expected columns are
 	* All years from 2009 
 	* use "With code" option (avoid "label"), with Total
 	* Include all age groups (including total, unknown and sometimes several upper bounds)
-    * Inclde "Flag and Footnotes"
+    * Include "Flag and Footnotes"
 	
 Expected columns are :
  * "TIME" : Year of population
  * "GEO" : NUTS 2 code
  * "SEX" : "T","F","M" 
- * "AGE" : Age group code for ex "Y45-49", "TOTAL", "UNK" (for unknown), Y_GE80
+ * "AGE" : Age group code for ex. "Y45-49", "TOTAL", "UNK" (for unknown), Y_GE80 (for upper bounds)
  * "Value" : Population for the strata (English notation, "," as thousands separator)
  * "Flag and Footnotes"
  
