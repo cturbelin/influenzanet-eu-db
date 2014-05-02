@@ -5,14 +5,27 @@ Created on 2 mai 2014
 '''
 
 import csv
+import sys
 
-geo_levels = ['country', 'nuts1', 'nuts2']
+geo_levels = ['country', 'nuts1', 'nuts2', 'nuts3']
+
+pop_geo_levels = ['country', 'nuts1', 'nuts2']
+
+def log(msg):
+    print >> sys.stderr, msg
 
 def get_upper_level(level):
     i = geo_levels.index(level)
     if(i == 0):
         return None
     return geo_levels[i - 1] 
+
+def get_upper_levels(level):
+    i = geo_levels.index(level)
+    if(i == 0):
+        return None
+    return geo_levels[:i] 
+
     
 def get_geo_field_name(level):
     if level == 'country':
@@ -22,7 +35,7 @@ def get_geo_field_name(level):
 
 def read_file(fn):
     try:
-        print "Opening %s" % fn
+        log("Opening %s" % fn)
         f = open(fn, 'r')
         r = csv.DictReader(f, delimiter=',', quotechar='"')
         data = []
@@ -49,7 +62,7 @@ def create_insert_query(fn, columns, table_name, accept_null=None, append=None, 
         tuples = []
         for row in data:
             if debug:
-                print row
+                log(row)
             values = []
             for col in columns:
                 x = row[col]

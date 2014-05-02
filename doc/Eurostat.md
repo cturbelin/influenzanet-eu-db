@@ -8,6 +8,9 @@ Expected columns are
  NUTS CODE;NUTS LABEL;NUTS LEVEL;COUNTRY CODE;COUNTRIES SORTING ORDER;ORDER
 
 * Extract population data with 5-year-age group and sex at NUTS 2 level, 
+ URL :http://epp.eurostat.ec.europa.eu/portal/page/portal/population/data/database
+	 http://appsso.eurostat.ec.europa.eu/nui/show.do?query=BOOKMARK_DS-272662_QID_4E7C0E14_UID_-3F171EB0&layout=TIME,C,X,0;GEO,C,Y,0;SEX,C,Z,0;AGE,L,Z,1;INDICATORS,C,Z,2;&zSelection=DS-272662SEX,T;DS-272662AGE,TOTAL;DS-272662INDICATORS,OBS_FLAG;&rankName1=AGE_1_2_-1_2&rankName2=SEX_1_2_-1_2&rankName3=INDICATORS_1_2_-1_2&rankName4=TIME_1_0_0_0&rankName5=GEO_1_2_0_1&sortC=ASC_-1_FIRST&rStp=&cStp=&rDCh=&cDCh=&rDM=true&cDM=true&footnes=false&empty=false&wai=false&time_mode=ROLLING&time_most_recent=true&lang=EN&cfo=%23%23%23%2C%23%23%23.%23%23%23
+ Datasetname : Population on 1 January by five years age groups and sex - NUTS 2 regions (demo_r_pjangroup) 
 	* All years from 2009 
 	* use "With code" option (avoid "label"), with Total
 	* Include all age groups (including total, unknown and sometimes several upper bounds)

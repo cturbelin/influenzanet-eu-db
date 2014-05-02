@@ -6,7 +6,7 @@ Created on 30 avr. 2014
 Create SQL script from population data
 
 '''
-from lib.common import geo_levels, read_file, get_geo_field_name
+from lib.common import pop_geo_levels, read_file, get_geo_field_name, log
 import argparse
 import csv
 
@@ -18,7 +18,7 @@ args = parser.parse_args()
 
 year = int(args.year[0])
 
-print "Importing year " + str(year)
+log("Importing year " + str(year))
 
 
 def make_field_name(column):
@@ -50,8 +50,8 @@ def create_query(fn, columns, table_name):
 
 all_ok = True
 queries = ''
-for level in geo_levels:
-    print "level " + level
+for level in pop_geo_levels:
+    log("level " + level)
     
     code_level = get_geo_field_name(level)
     add_country = level != "country" 
@@ -62,14 +62,14 @@ for level in geo_levels:
         columns.append('country')
     fn = "data/population/%d_pop_%s.csv" % (year, level)
     table_name = 'pop_%s' % level
-    print " > importing " + fn,
+    log(" > importing " + fn)
     query = create_query(fn, columns, table_name)
     if query:
-        print " OK"
+        log(" OK")
         query = 'DELETE FROM ' + table_name +' where "year"=' + str(year)+";\n\n" + query
         queries += query + "\n\n"
     else:
-        print "<ERROR>"
+        log("<ERROR>")
         all_ok = False
     
     # age5 level table
@@ -78,18 +78,16 @@ for level in geo_levels:
         columns.append('country')
     fn = "data/population/%d_pop_%s_age5.csv" % (year, level)
     table_name = 'pop_age5_%s' % level
-    print " > importing " + fn,
+    log(" > importing " + fn)
     query = create_query(fn, columns, table_name)
     if query:
-        print " OK"
+        log(" OK")
         query = 'DELETE FROM ' + table_name +' where "year"=' + str(year)+ ";\n\n" + query
         queries += query + "\n\n"
     else:
-        print "<ERROR>"
+        log("<ERROR>")
         all_ok = False
         
 if all_ok:
-    output = open(str(year) + ".sql", "w+")
-    output.write(queries)
-    output.close()
+    print queries
         
