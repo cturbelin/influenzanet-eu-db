@@ -8,3 +8,4 @@ Requirements:
 - Python >= 2.6 & < 3
 - bash
 - PostgreSQL 9.1
+- R >= 2.13.2 (+ reshape2 & plyr)
