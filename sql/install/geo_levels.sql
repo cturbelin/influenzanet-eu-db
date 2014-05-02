@@ -5,6 +5,12 @@ CREATE TABLE geo_levels
    code_nuts2 character(4) NOT NULL
 );
 
+CREATE TABLE geo_country (
+   country character(2) NOT NULL, 
+   title text NOT NULL,
+   CONSTRAINT pk_geo_country PRIMARY KEY (country)
+);
+
 CREATE TABLE geo_nuts1
 (
    country character(2) NOT NULL, 
@@ -12,7 +18,6 @@ CREATE TABLE geo_nuts1
    title text NOT NULL,
    CONSTRAINT pk_geo_nuts1 PRIMARY KEY (code_nuts1)
 );
-
 
 CREATE TABLE geo_nuts2
 (
@@ -22,6 +27,16 @@ CREATE TABLE geo_nuts2
    title text NOT NULL,
    CONSTRAINT pk_geo_nuts2 PRIMARY KEY (code_nuts2)
 );
+
+CREATE TABLE geo_nuts3
+(
+   country character(2) NOT NULL, 
+   code_nuts2 character(4) NOT NULL,
+   code_nuts3 character(5) NOT NULL, 
+   title text NOT NULL,
+   CONSTRAINT pk_geo_nuts3 PRIMARY KEY (code_nuts3)
+);
+
 
 -- Population tables
 

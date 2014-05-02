@@ -6,11 +6,11 @@ Created on 30 avr. 2014
 Create SQL script from population data
 
 '''
+from lib.common import geo_levels, read_file, get_geo_field_name
 import argparse
 import csv
-geo_levels = ['nuts2','nuts1','country']
 
-parser = argparse.ArgumentParser(description='Import population file')
+parser = argparse.ArgumentParser(description='Generate SQL to import population file from csv data file')
 
 parser.add_argument('year', metavar='Y', type=int, nargs=1, help='year to import')
 
@@ -20,20 +20,11 @@ year = int(args.year[0])
 
 print "Importing year " + str(year)
 
-def read_file(fn):
-    try:
-        print "Opening %s" % fn
-        f = open(fn, 'r')
-        r = csv.DictReader(f, delimiter=',', quotechar='"')
-        data = []
-        for row in r:
-            data.append(row)
-        return data
-    except IOError,e:
-        print e
-    return None
 
 def make_field_name(column):
+  """
+  Transform R based named (with .) to DB fields name 
+  """
   column = column.replace('.', '_')
   return column
 
@@ -62,12 +53,8 @@ queries = ''
 for level in geo_levels:
     print "level " + level
     
-    if level != "country":
-        code_level = 'code_'  + level
-        add_country = True
-    else:
-        code_level = level
-        add_country = False 
+    code_level = get_geo_field_name(level)
+    add_country = level != "country" 
     
     # Global level table
     columns = ['all', 'male', 'female', 'year.ref', code_level]
@@ -84,6 +71,7 @@ for level in geo_levels:
     else:
         print "<ERROR>"
         all_ok = False
+    
     # age5 level table
     columns = ['age.min','age.max', 'all', 'male', 'female', 'year.ref', code_level]
     if add_country:
