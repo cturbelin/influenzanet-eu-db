@@ -1,0 +1,9 @@
+#!/bin/sh
+
+cat 'sql/install/geo_levels.sql' > geo.sql
+
+python bin/import-geo.py >> geo.sql 2>>log.err
+
+python bin/import-population.py 2011 >> geo.sql 2>>log.err
+python bin/import-population.py 2012 >> geo.sql 2>>log.err
+python bin/import-population.py 2013 >> geo.sql 2>>log.err
