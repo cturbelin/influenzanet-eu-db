@@ -23,6 +23,6 @@ echo "Cleaning up"
 $PGSQL < $SQL_DIR/import/cleanup_db.sql
 
 echo "Restoring Database"
-pg_restore -Fc -C -x -O -d $DB_TARGET < $LOCAL_DIR/epidb_results.custom
+pg_restore -Fc -a -x -O -d $DB_TARGET < $LOCAL_DIR/epidb_results.custom
 
 ./post-import

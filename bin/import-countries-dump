@@ -21,23 +21,13 @@ countries="nl fr es uk it pt se dk"
 echo "Cleaning up"
 $PGSQL < $SQL_DIR/import/cleanup_db.sql
 
-first=1
 for country in $countries
 do
-    if [ "$first" == "1" ]
-        then
-          echo "First dump : creating table"
-                create="-C"
-                first=0
-        else
-         echo "Restoring without create"
-         create="-a"
-        fi
-         file="$LOCAL_DIR/epidb_results.custom.$country"
+        file="$LOCAL_DIR/epidb_results.custom.$country"
         if [ ! -f $file ]; then
          echo "Unable to find epidb dump in local/ dir. Did you run bin/download ?"
          continue
         fi
         echo "Restoring Database $country"
-        pg_restore -Fc $create -x -O -d $DB_TARGET < $file
+        pg_restore -Fc -a -x -O -d $DB_TARGET < $file
 done
