@@ -1,0 +1,23 @@
+#!/bin/sh
+
+if [ ! -f conf.sh ]; then
+ echo "conf.sh file not found, are you running in root dir ?"
+ exit 1
+fi
+
+. ./conf.sh
+
+PGSQL="psql -d $DB_TARGET"
+
+SQL_DIR="sql"
+LOCAL_DIR="local"
+
+file=$1
+
+if [ ! -f $LOCAL_DIR/$file ]; then
+ echo "Unable to find $file in local/ dir."
+ exit 1
+fi
+
+echo "Restoring Database from $file"
+pg_restore -Fc -C -x -O -d $DB_TARGET < $LOCAL_DIR/$file
