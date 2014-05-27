@@ -25,24 +25,4 @@ $PGSQL < $SQL_DIR/import/cleanup_db.sql
 echo "Restoring Database"
 pg_restore -Fc -C -x -O -d $DB_TARGET < $LOCAL_DIR/epidb_results.custom
 
-echo "Creating id primary key"
-$PGSQL <  $SQL_DIR/import/add_epidb_key.sql
-
-echo "Creating survey_surveyuser table"
-$PGSQL <  $SQL_DIR/import/create_surveyuser.sql
-
-echo "Updating Health status Views"
-
-$PGSQL <  $SQL_DIR/import/health_status.sql
-
-echo "Cleaning up data"
-
-$PGSQL <  $SQL_DIR/import/cleanup_data.sql
-
-
-if [ -f  $LOCAL_DIR/post-import ]; then
- echo "running post-install hooks"
- . $LOCAL_DIR/post-import
-fi
-
-echo "Import done."
+./post-import

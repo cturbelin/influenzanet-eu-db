@@ -1,0 +1,41 @@
+#!/bin/sh
+
+# Restore DB tables from each country using their dump
+
+if [ ! -f conf.sh ]; then
+ echo "conf.sh file not found, are you running in root dir ?"
+ exit 1
+fi
+
+. ./conf.sh
+
+PGSQL="psql -d $DB_TARGET"
+
+SQL_DIR="sql"
+LOCAL_DIR="local"
+
+echo $CWD
+ 
+countries="fr es uk it nl pt se dk"
+
+
+echo "Cleaning up"
+$PGSQL < $SQL_DIR/import/cleanup_db.sql
+
+first=1
+for country in "$countries"
+do
+    if [ "$first" == "1" ]
+	 create="-C"
+	else
+	 create=""
+	fi
+    file="$LOCAL_DIR/epidb_results.custom.$country"	
+	if [ ! -f $file ]; then
+	 echo "Unable to find epidb dump in local/ dir. Did you run bin/download ?"
+	else
+		echo "Restoring Database $country"
+		pg_restore -Fc $create -x -O -d $DB_TARGET < $file
+	fi
+done
+
