@@ -41,6 +41,8 @@ def read_file(fn):
         data = []
         for row in r:
             data.append(row)
+            
+        #data.imported_fields = r.fieldnames
         return data
     except IOError,e:
         print e

@@ -9,6 +9,23 @@ CREATE TABLE geo_levels
    code_nuts3 character(5) NOT NULL
 );
 
+DROP TABLE IF EXISTS geo_zip;
+
+CREATE TABLE geo_zip
+(
+  code_zip text NOT NULL, -- zip code
+  country character(2) NOT NULL,
+  code_nuts1 character(3), -- Code level NUTS1
+  code_nuts2 character(4), -- code level NUTS2
+  code_nuts3 character(5), -- code level NUTS3
+  CONSTRAINT pk_geo_zip PRIMARY KEY (code_zip, country)
+);
+
+COMMENT ON COLUMN geo_zip.code_zip IS 'zip code';
+COMMENT ON COLUMN geo_zip.code_nuts1 IS 'Code level NUTS1';
+COMMENT ON COLUMN geo_zip.code_nuts2 IS 'code level NUTS2';
+COMMENT ON COLUMN geo_zip.code_nuts3 IS 'code level NUTS3';
+
 DROP TABLE IF EXISTS geo_country;
 CREATE TABLE geo_country (
    country character(2) NOT NULL, 

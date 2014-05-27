@@ -35,6 +35,11 @@ echo "Updating Health status Views"
 
 $PGSQL <  $SQL_DIR/import/health_status.sql
 
+echo "Cleaning up data"
+
+$PGSQL <  $SQL_DIR/import/cleanup_data.sql
+
+
 if [ -f  $LOCAL_DIR/post-import ]; then
  echo "running post-install hooks"
  . $LOCAL_DIR/post-import
