@@ -25,19 +25,27 @@ for country in $countries
 do
         prefix=epidb_results.custom
 	file="$LOCAL_DIR/$prefix.$country"
-	dump="$LOCAL_DIR/$prefix.$country.clean"
         if [ ! -f $file ]; then
          echo "Unable to find epidb dump in local/ dir. Did you run bin/download ?"
          continue
         fi
         echo "===== Importing dump $country ===="
-	rm -fq $dump
-	bin/clean-dump $prefix $country
+	if [ -f $SQL_DIR/dump/create.$country.sql ]; then
+		dump="$LOCAL_DIR/$prefix.$country.clean"
+		if [ -f $dump ]; then
+			rm $dump
+		fi
+		echo "Running cleanup"
+		bin/clean-dump $prefix $country
+	else
+	 	echo "No need to clean the dump, use the dump $file" 
+		dump=$file
+	fi
 	if [ ! -f $dump ]; then
-	  echo "ERROR: Cleanup failed"
+	  echo "ERROR: Unable to find $dump"
           exit 1	
 	fi
-	echo "Restoring cleaned dump for $country into $DB_TARGET"
+	echo "Restoring cleaned dump for $country into $DB_TARGET from $dump"
         pg_restore -Fc -a -x -O -d $DB_TARGET $dump 
 	if [ "$?" == "0" ]; then
 		echo "Restoring OK"

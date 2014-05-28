@@ -3,6 +3,7 @@ DROP TABLE IF EXISTS epidb_results_weekly;
 
 
 -- Relax Q4d_* constraint accept NULL
+-- Relax Q17_* null constraint
 
 CREATE TABLE epidb_results_intake
 (
@@ -97,12 +98,12 @@ CREATE TABLE epidb_results_intake
   "Q16_2" boolean NOT NULL,
   "Q16_3" boolean NOT NULL,
   "Q16_4" boolean NOT NULL,
-  "Q17_0" boolean NOT NULL,
-  "Q17_1" boolean NOT NULL,
-  "Q17_2" boolean NOT NULL,
-  "Q17_3" boolean NOT NULL,
-  "Q17_4" boolean NOT NULL,
-  "Q17_5" boolean NOT NULL,
+  "Q17_0" boolean,
+  "Q17_1" boolean,
+  "Q17_2" boolean,
+  "Q17_3" boolean,
+  "Q17_4" boolean,
+  "Q17_5" boolean,
   CONSTRAINT "pollster_results_intake_Q0_check6" CHECK ("Q0" >= 0),
   CONSTRAINT "pollster_results_intake_Q10_check6" CHECK ("Q10" >= 0),
   CONSTRAINT "pollster_results_intake_Q10b_check6" CHECK ("Q10b" >= 0),
