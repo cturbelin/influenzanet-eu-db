@@ -1,8 +1,9 @@
-DROP INDEX IF EXISTS idx_intake_q3_country;
-DROP TABLE IF EXISTS epidb_results_intake CASCADE;
-DROP TABLE IF EXISTS epidb_results_weekly CASCADE;
+DROP TABLE IF EXISTS epidb_results_intake;
+DROP TABLE IF EXISTS epidb_results_weekly;
 
--- Relax Q4d_* to accept NULL
+
+-- Relax Q4d_* constraint accept NULL
+
 CREATE TABLE epidb_results_intake
 (
   country character(2),
@@ -17,12 +18,12 @@ CREATE TABLE epidb_results_intake
   "Q4b" integer,
   "Q4b_0_open" character varying(30),
   "Q4c" integer,
-  "Q4d_0" ,
-  "Q4d_1" ,
-  "Q4d_2" ,
-  "Q4d_3" ,
-  "Q4d_4" ,
-  "Q4d_5" ,
+  "Q4d_0" boolean,
+  "Q4d_1" boolean ,
+  "Q4d_2" boolean ,
+  "Q4d_3" boolean ,
+  "Q4d_4" boolean ,
+  "Q4d_5" boolean ,
   "Q5_0" boolean NOT NULL,
   "Q5_1" boolean NOT NULL,
   "Q5_2" boolean NOT NULL,
@@ -215,3 +216,5 @@ CREATE TABLE epidb_results_weekly
   CONSTRAINT "pollster_results_weekly_Q8b_multi_row4_col1_check1" CHECK ("Q8b_multi_row4_col1" >= 0),
   CONSTRAINT "pollster_results_weekly_Q9b_check5" CHECK ("Q9b" >= 0)
 );
+
+
