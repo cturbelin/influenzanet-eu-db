@@ -1,0 +1,92 @@
+#!/bin/sh
+
+# Import a dump in a temporary db to cleanup the table structure & the data
+# Original dump file should be name using the [prefix].[country] pattern
+
+# This script first create the table, run country specific hooks before and after the table restoring
+# And finally dump the cleaned tables
+
+if [ ! -f conf.sh ]; then
+ echo "conf.sh file not found, are you running in root dir ?"
+ exit 1
+fi
+
+. ./conf.sh
+
+prefix=$1
+country=$2
+profile=$3 # not used yet
+
+file=local/$prefix.$country
+dump=local/$prefix.$country.clean
+
+DB=$DB_TEMPORARY # should be defined in conf.sh
+
+SQL_DIR=sql/dump
+
+usage() {
+ echo "$0 prefix country [profile]"
+ echo "  prefix : prefix name for the dump file (prefix.country)"
+ echo "  country: country code for the dump file"
+ echo "expected input file : [prefix].[country]"
+ echo "output file : [prefix].[country].clean"
+ exit 1
+}
+
+if (( $# < 2 )); then
+ usage
+fi
+
+if [ "$country" == "" ]; 
+then
+	usage
+fi
+
+
+if [ ! -f $file ]; 
+then
+	echo "Error: Unable to find input dump '$file'"
+	exit 1
+fi
+
+
+echo "Preparing DB $DB"
+# Create the target table
+psql -d $DB < $SQL_DIR/create.sql
+
+hook=$SQL_DIR/create.$country.sql
+if [ -f $hook ];
+ then
+ echo running $hook $country
+ psql -d $DB < $hook
+fi
+
+echo "Restoring dump in $DB"
+pg_restore -d $DB -x -O -a -v -Fc $file
+ret=$?
+
+if [ "$ret" != "0" ]; then
+	echo "Unable to import dump $file for country $country"
+	exit 1
+else
+	echo "Retoring OK"
+fi
+
+echo "Post import"
+hook=$SQL_DIR/post.$country.sql
+if [ -f $hook ];
+ then
+ echo " > running $hook $country"
+ psql -d $DB < $hook
+fi
+
+echo "Dumping final tables into $dump"
+pg_dump -Fc -x -O -t epidb_results_intake -t epidb_results_weekly --clean --no-owner $DB > $dump
+ret=$?
+
+if [ "$ret" == "0" ];
+then
+	echo " > Dump successful"
+fi
+echo Done.
+
