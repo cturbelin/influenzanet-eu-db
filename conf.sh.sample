@@ -1,0 +1,3 @@
+DB_TEMPORARY=epipop # Temporary db used to cleanup the data
+DB_TARGET=epidb # Final db to store data
+EPIDB_USER= # username

@@ -18,16 +18,31 @@ echo $CWD
 
 countries="nl fr es uk it pt se dk"
 
-echo "Cleaning up"
+echo "Cleaning up DB $DB_TARGET"
 $PGSQL < $SQL_DIR/import/cleanup_db.sql
 
 for country in $countries
 do
-        file="$LOCAL_DIR/epidb_results.custom.$country"
+        prefix=epidb_results.custom
+	file="$LOCAL_DIR/$prefix.$country"
+	dump="$LOCAL_DIR/$prefix.$country.clean"
         if [ ! -f $file ]; then
          echo "Unable to find epidb dump in local/ dir. Did you run bin/download ?"
          continue
         fi
-        echo "Restoring Database $country"
-        pg_restore -Fc -a -x -O -d $DB_TARGET < $file
+        echo "===== Importing dump $country ===="
+	rm -fq $dump
+	bin/clean-dump $prefix $country
+	if [ ! -f $dump ]; then
+	  echo "ERROR: Cleanup failed"
+          exit 1	
+	fi
+	echo "Restoring cleaned dump for $country into $DB_TARGET"
+        pg_restore -Fc -a -x -O -d $DB_TARGET $dump 
+	if [ "$?" == "0" ]; then
+		echo "Restoring OK"
+	else
+		echo "<ERROR> Unable to restore db completely"
+		exit 1
+	fi
 done
