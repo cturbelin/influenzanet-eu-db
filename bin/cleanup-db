@@ -1,0 +1,19 @@
+#!/bin/sh
+
+# Preparing DB for recreating the DB from dumps
+
+if [ ! -f conf.sh ]; then
+ echo "conf.sh file not found, are you running in root dir ?"
+ exit 1
+fi
+
+. ./conf.sh
+
+PGSQL="psql -d $DB_TARGET"
+
+SQL_DIR="sql"
+LOCAL_DIR="local"
+
+echo "Cleaning up DB $DB_TARGET"
+$PGSQL < $SQL_DIR/import/cleanup_db.sql
+
