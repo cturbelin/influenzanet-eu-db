@@ -11,18 +11,20 @@ PGSQL="psql -d $DB_TARGET"
 
 SQL_DIR="sql"
 LOCAL_DIR="local"
+DUMPFILE=$LOCAL_DIR/epidb_results.dump
+
 
 echo $CWD
  
-if [ ! -f $LOCAL_DIR/epidb_results.custom ]; then
+if [ ! -f $DUMPFILE ]; then
  echo "Unable to find epidb dump in local/ dir. Did you run bin/download ?"
  exit 1
 fi
 
-echo "Cleaning up"
+echo "Cleaning up database $DB_TARGET"
 $PGSQL < $SQL_DIR/import/cleanup_db.sql
 
 echo "Restoring Database"
-pg_restore -Fc -a -x -O -d $DB_TARGET < $LOCAL_DIR/epidb_results.custom
+pg_restore -Fc -a -x -O -d $DB_TARGET < $DUMPFILE
 
-./post-import
+#bin/post-import

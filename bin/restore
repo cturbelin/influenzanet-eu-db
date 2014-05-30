@@ -7,12 +7,12 @@ fi
 
 . ./conf.sh
 
-PGSQL="psql -d $DB_TARGET"
-
 SQL_DIR="sql"
 LOCAL_DIR="local"
 
 file=$1
+shift 1
+opts=$@
 
 if [ ! -f $LOCAL_DIR/$file ]; then
  echo "Unable to find $file in local/ dir."
@@ -20,4 +20,4 @@ if [ ! -f $LOCAL_DIR/$file ]; then
 fi
 
 echo "Restoring Database from $file"
-pg_restore -Fc -C -x -O -d $DB_TARGET < $LOCAL_DIR/$file
+pg_restore -Fc -x -O -d $DB_TARGET $opts < $LOCAL_DIR/$file

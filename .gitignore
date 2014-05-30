@@ -8,3 +8,4 @@ local/
 lib64/
 .settings/
 .pydevproject
+conf.sh

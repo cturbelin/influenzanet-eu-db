@@ -7,5 +7,6 @@ fi
 
 . ./conf.sh
 
-scp $EPIDB_USER@epidb.influenzanet.eu:/home/epidb/data/epidb_results.custom local/
+#scp $EPIDB_USER@epidb.influenzanet.eu:/home/epidb/data/epidb_results.custom* local/
+scp epidb@influweb.it:/home/epidb/upload/*.dump local/
 
