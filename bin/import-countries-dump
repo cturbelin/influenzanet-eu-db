@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Restore DB tables from each country using their dump
-
+# Caution DB is not created by this script
 if [ ! -f conf.sh ]; then
  echo "conf.sh file not found, are you running in root dir ?"
  exit 1
@@ -9,7 +9,7 @@ fi
 
 . ./conf.sh
 
-PGSQL="psql -d $DB_TARGET"
+PGSQL="psql $DB_CNX  -d $DB_TARGET"
 
 SQL_DIR="sql"
 LOCAL_DIR="local"
@@ -18,15 +18,15 @@ echo $CWD
 
 countries="nl fr es uk it pt se dk"
 
-echo "Cleaning up DB $DB_TARGET"
-$PGSQL < $SQL_DIR/import/cleanup_db.sql
+#echo "Cleaning up DB $DB_TARGET"
+#$PGSQL < $SQL_DIR/import/cleanup_db.sql
 
 for country in $countries
 do
         prefix=epidb_results.custom
 	file="$LOCAL_DIR/$prefix.$country"
         if [ ! -f $file ]; then
-         echo "Unable to find epidb dump in local/ dir. Did you run bin/download ?"
+         echo "Unable to find $file. Did you run bin/download ?"
          continue
         fi
         echo "===== Importing dump $country ===="
@@ -46,7 +46,7 @@ do
           exit 1	
 	fi
 	echo "Restoring cleaned dump for $country into $DB_TARGET from $dump"
-        pg_restore -Fc -a -x -O -d $DB_TARGET $dump 
+        pg_restore  $DB_CNX -Fc -a -x -O -d $DB_TARGET $dump 
 	if [ "$?" == "0" ]; then
 		echo "Restoring OK"
 	else

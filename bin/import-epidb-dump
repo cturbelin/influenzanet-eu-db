@@ -7,7 +7,7 @@ fi
 
 . ./conf.sh
 
-PGSQL="psql -d $DB_TARGET"
+PGSQL="psql $DB_CNX  -d $DB_TARGET"
 
 SQL_DIR="sql"
 LOCAL_DIR="local"
@@ -25,6 +25,6 @@ echo "Cleaning up database $DB_TARGET"
 $PGSQL < $SQL_DIR/import/cleanup_db.sql
 
 echo "Restoring Database"
-pg_restore -Fc -a -x -O -d $DB_TARGET < $DUMPFILE
+pg_restore $DB_CNX  -Fc -a -x -O -d $DB_TARGET < $DUMPFILE
 
 #bin/post-import

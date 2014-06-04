@@ -7,7 +7,7 @@ fi
 
 . ./conf.sh
 
-PGSQL="psql -d $DB_TARGET"
+PGSQL="psql $DB_CNX  -d $DB_TARGET"
 
 SQL_DIR="sql"
 LOCAL_DIR="local"

@@ -52,7 +52,7 @@ fi
 
 echo "Preparing DB $DB"
 # Create the target table
-psql -d $DB < $SQL_DIR/create.sql
+psql $DB_CNX -d $DB < $SQL_DIR/create.sql
 
 hook=$SQL_DIR/create.$country.sql
 if [ -f $hook ];
@@ -62,7 +62,7 @@ if [ -f $hook ];
 fi
 
 echo "Restoring dump in $DB"
-pg_restore -d $DB -x -O -a -v -Fc $file
+pg_restore $DB_CNX -d $DB -x -O -a -v -Fc $file
 ret=$?
 
 if [ "$ret" != "0" ]; then
@@ -77,11 +77,11 @@ hook=$SQL_DIR/post.$country.sql
 if [ -f $hook ];
  then
  echo " > running $hook $country"
- psql -d $DB < $hook
+ psql $DB_CNX  -d $DB < $hook
 fi
 
 echo "Dumping final tables into $dump"
-pg_dump -Fc -x -O -t epidb_results_intake -t epidb_results_weekly --clean --no-owner $DB > $dump
+pg_dump $DB_CNX  -Fc -x -O -t epidb_results_intake -t epidb_results_weekly --clean --no-owner $DB > $dump
 ret=$?
 
 if [ "$ret" == "0" ];
