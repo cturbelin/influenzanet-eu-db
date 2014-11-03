@@ -112,7 +112,7 @@ for(year in output.years) {
   
   if( !all(is.finite(y$time)) ) {
       print( y[ !is.finite(y$time), ] )
-      cat("Régions sans données pour cette année - Impossible à calculer\n")
+      cat("No data for this year in some area. Population cannot be computed\n")
       next()
   }
   
@@ -149,7 +149,7 @@ for(year in output.years) {
   pop = pop[ !pop$age == "TOTAL", ]
   pop$age = factor(pop$age)
   
-  # Recode age group
+  # Recode age group label to age.min and age.max columns
   i = grepl("^Y([0-9]+)\\-([0-9]+)", pop$age)
   group = strsplit(gsub("^Y([0-9]+)\\-([0-9]+)","\\1;\\2", pop$age[i]), split=";",fixed=T)
   group = do.call(rbind, lapply(group, function(x) { x = as.numeric(x); data.frame(min=x[1], max=x[2]) }))
@@ -206,7 +206,7 @@ for(year in output.years) {
   
   # Now that's ok
   
-  pop = pop[ pop$age != "UNK", ]
+  pop = pop[ pop$age != "UNK", ] # Remove unknown age-group category (actually always 0)
   
   #pop = pop[, c('age','geo','country.code','all','male','female','flags','year.ref', 'age.min','age.max')]
   pop = rename(pop, list("geo"="code_nuts2","country.code"="country"))
