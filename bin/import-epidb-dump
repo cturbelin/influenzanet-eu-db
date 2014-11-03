@@ -27,4 +27,4 @@ $PGSQL < $SQL_DIR/import/cleanup_db.sql
 echo "Restoring Database"
 pg_restore $DB_CNX  -Fc -a -x -O -d $DB_TARGET < $DUMPFILE
 
-#bin/post-import
+bin/post-import

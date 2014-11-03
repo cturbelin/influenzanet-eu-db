@@ -1,0 +1,12 @@
+#!/bin/sh
+
+country=$1
+
+if [ $country == "" ]; then
+ echo usage country
+ exit 1
+fi
+
+ns=epidb_$country
+psql $DBNAME -c "SET search_path = $ns; DROP TABLE IF EXISTS pollster_results_intake; DROP TABLE IF EXISTS pollster_results_weekly;"
+

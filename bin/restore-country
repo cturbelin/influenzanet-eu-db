@@ -1,0 +1,29 @@
+#!/bin/sh
+
+if [ ! -f conf.sh ]; then
+ echo "conf.sh file not found, are you running in root dir ?"
+ exit 1
+fi
+
+. ./conf.sh
+
+SQL_DIR="sql"
+LOCAL_DIR="local"
+
+file=$1
+country=$2
+
+if [ $country == "" ]; then
+ echo "usage restore-country [file] [country]"
+ exit 1
+fi
+
+if [ ! -f $LOCAL_DIR/$file ]; then
+ echo "Unable to find $file in local/ dir."
+ exit 1
+fi
+
+echo "Restoring Database from $file"
+ns="epidb_$1"
+pg_restore -Fc -x -O "$LOCAL_DIR/$file" | sed -e "s/SET search_path = public/SET search_path = $ns/g" | psql $DB_CNX $DB_TARGET
+
