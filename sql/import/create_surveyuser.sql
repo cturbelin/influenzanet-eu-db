@@ -2,7 +2,7 @@ DROP TABLE IF EXISTS survey_surveyuser CASCADE;
 
 CREATE TABLE survey_surveyuser as SELECT DISTINCT global_id FROM (select global_id from epidb_results_intake union select global_id from epidb_results_weekly) t;
 
-DROP SEQUENCE survey_surveyuser_id_seq;
+DROP SEQUENCE IF EXISTS survey_surveyuser_id_seq;
 CREATE SEQUENCE survey_surveyuser_id_seq START WITH 1 INCREMENT BY 1 NO MAXVALUE NO MINVALUE CACHE 1;
 ALTER TABLE survey_surveyuser ADD COLUMN id integer;
 UPDATE survey_surveyuser SET id = nextval('survey_surveyuser_id_seq');

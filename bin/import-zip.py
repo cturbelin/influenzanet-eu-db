@@ -7,7 +7,7 @@ from lib.common import geo_levels, read_file, create_insert_query, get_geo_field
 
 import argparse
 
-parser = argparse.ArgumentParser(description='Generate SQL to import zip')
+parser = argparse.ArgumentParser(description='Generate SQL to import zip codes (zip geographic level)')
 
 parser.add_argument('file', nargs=1, help='file to import')
 
