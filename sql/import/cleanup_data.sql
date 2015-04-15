@@ -6,6 +6,17 @@ UPDATE epidb_results_weekly set "country"='BE' where "country"='BN';
 
 CREATE INDEX idx_intake_q3_country ON epidb_results_intake USING btree (country, "Q3");
 
+-- Cleanup geographical code
+UPDATE epidb_results_intake SET "Q3"=btrim("Q3");
+
+-- Cleanup Portugal codes
+
+-- Extract prefix zip code from full zip code format
+UPDATE epidb_results_intake SET "Q3"=LEFT("Q3",4) where "country"='PT' and "Q3" ~ '^\d{4}\-\d{3}'; 
+
+-- Extract prefix zip from zip + town name
+UPDATE epidb_results_intake SET "Q3"=LEFT("Q3",4) where "country"='PT' and "Q3" ~ '^\d{4} \w'; 
+
 -- Cleanup Ireland region codes
 UPDATE epidb_results_intake SET "Q3"='IE024' WHERE "Q3"='CARLOW-KILKENNY' AND "country"='IE';
 UPDATE epidb_results_intake SET "Q3"='IE011' WHERE "Q3"='CAVAN-MONAGHAN' AND "country"='IE';
