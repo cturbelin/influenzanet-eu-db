@@ -1,0 +1,50 @@
+#!/bin/sh
+if [ ! -f conf.sh ]; then
+ echo "conf.sh file not found, are you running in root dir ?"
+ exit 1
+fi
+
+. ./conf.sh
+
+#PGSQL="psql $DB_CNX  -d $DB_TARGET"
+
+DB_TEMP=$DB_TEMPORARY
+
+# Dump gis tables
+
+#GIS_TABLE="geo_*
+
+set -e
+
+pg_dump $DB_CNX -C -O -x -t "geo_*" -t "pop_*" --schema=public -f gis_tables.sql $DB_TARGET
+
+COUNTRY='IE'
+
+SCHEMA="T_GIS_$COUNTRY"
+
+CREATE_SCHEMA="DROP SCHEMA IF EXISTS $SCHEMA CASCADE; CREATE SCHEMA $SCHEMA;"
+
+echo "Creating temporary schema $SCHEMA in $DB_TEMP"
+psql $DB_CNX -d $DB_TEMP -e -c "$CREATE_SCHEMA"
+
+echo "Importing global gis tables"
+
+cat gis_tables.sql | sed -e "s/SET search_path = public/SET search_path = $SCHEMA/g" | psql $DB_CNX -d $DB_TEMP
+
+echo "Grant"
+GRANT="GRANT ALL ON SCHEMA $SCHEMA TO PUBLIC; GRANT ALL ON ALL TABLES IN SCHEMA $SCHEMA TO PUBLIC;"
+psql $DB_CNX -d $DB_TEMP -e  -c "$GRANT"
+
+echo "Selecting country"
+
+cat 'sql/dump/gis_country.sql' | sed -e "s/{{country}}/$COUNTRY/g"|sed -e "s/{{schema}}/$SCHEMA/g" | psql $DB_CNX -d $DB_TEMP
+
+psql $DB_CNX -d $DB_TEMP -e -c "VACUUM";
+
+echo "Dumping final db"
+file=gis_tables_$COUNTRY.sql
+pg_dump $DB_CNX -C -O -x --schema=$SCHEMA $DB_TEMP | sed -e "s/SET search_path = $SCHEMA/SET search_path = public/ig" | sed -e "s/CREATE SCHEMA/-- CREATE SCHEMA/g" > $file
+
+echo "Cleaning database"
+psql $DB_CNX -d $DB_TEMP -e -c "DROP SCHEMA $SCHEMA CASCADE;"
+
