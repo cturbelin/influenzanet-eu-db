@@ -7,7 +7,8 @@
 library(reshape2)
 library(plyr)
 
-output.years = c(2011, 2012, 2013)
+output.years = c(2014)
+population.file = "eurostat_population_nuts2_2014.csv"
 
 countries = c("BE", "DK",  "ES", "FR", "IE", "IT", "NL", "PT", "SE", "UK")
 
@@ -29,6 +30,10 @@ for(p in exclude.levels) {
 
 # Keep level 3 data
 nuts2 = nuts[ nuts$nuts.level == 2, c('nuts.code','country.code')]
+nuts2$nuts.code = factor(nuts2$nuts.code)
+nuts2$country.code = factor(nuts2$country.code)
+nuts2$code_nuts2 = nuts2$nuts.code
+nuts2$code_nuts1 = substr(nuts2$nuts.code, 1, 3)
 
 # Geo levels nuts 3
 geo.levels = nuts[ nuts$nuts.level == 3, c('nuts.code','country.code')]
@@ -58,8 +63,12 @@ for(i in 1:3) {
 for(year in output.years) {  
   
   cat("Computing ", year,"\n")
-  d = read.csv("data/eurostat/eurostat_population_nuts2.csv")
+  d = read.csv(paste0("data/eurostat/", population.file) )
   names(d) <- tolower(names(d))
+  
+  if( max(d$time) < year) {
+      stop("Unable to compute year",year, " with ", population.file)
+  }
   
   d = d[ d$time <= year, ] # Remove future years
   
@@ -136,7 +145,7 @@ for(year in output.years) {
   table(pop$country.code, pop$year.ref)
   
   pop$i = 1
-  check = aggregate(i ~ geo + age, data=pop, sum)
+  check = aggregate(i ~ geo + age , data=pop, sum)
   stopifnot(  all(check$i == 1) )
   
   max.age = 200
@@ -195,7 +204,9 @@ for(year in output.years) {
   # Check all expected groups are ok
   stopifnot(all(age.groups$min[i] == age.groups$min.expected[i]))
   
-  pop.frame = merge(data.frame(geo=nuts2$nuts.code), data.frame(age=age.groups$age))
+  check = aggregate(i ~ geo + age , data=pop, sum)
+  
+  pop.frame = merge(data.frame(geo=nuts2$code_nuts2), data.frame(age=age.groups$age))
   
   pop = merge(pop, pop.frame, by=c('geo','age'), all=T)
   
@@ -213,12 +224,13 @@ for(year in output.years) {
   
   cat("Reference year for this year")
   print(table(pop$country, pop$year.ref))
+  #print(table(pop$country, pop$year.ref, pop$age))
   
   cols.age = c('age.min','age.max','all','male','female','flags','year.ref','country')
   
   write.csv(pop[, c(cols.age, 'code_nuts2')], file=paste("data/population/",year,"_pop_nuts2_age5.csv",sep=''), row.names=F)
   
-  pop = merge(pop, geo.levels[, c("code_nuts2","code_nuts1")], by="code_nuts2", all.x=T)
+  pop = merge(pop, nuts2[, c("code_nuts2","code_nuts1")], by="code_nuts2", all.x=T)
   
   pop.nuts2 = pop
   

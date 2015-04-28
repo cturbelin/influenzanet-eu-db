@@ -9,3 +9,4 @@ lib64/
 .settings/
 .pydevproject
 conf.sh
+.Rproj.user
