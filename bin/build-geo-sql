@@ -7,3 +7,5 @@ python bin/import-geo.py >> geo.sql 2>>log.err
 python bin/import-population.py 2011 >> geo.sql 2>>log.err
 python bin/import-population.py 2012 >> geo.sql 2>>log.err
 python bin/import-population.py 2013 >> geo.sql 2>>log.err
+python bin/import-population.py 2014 >> geo.sql 2>>log.err
+python bin/import-population.py 2015 >> geo.sql 2>>log.err

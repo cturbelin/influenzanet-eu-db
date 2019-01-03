@@ -7,8 +7,8 @@
 library(reshape2)
 library(plyr)
 
-output.years = c(2014)
-population.file = "eurostat_population_nuts2_2014.csv"
+output.years = c(2015)
+population.file = "eurostat_population_nuts2_2015.csv"
 
 countries = c("BE", "DK",  "ES", "FR", "IE", "IT", "NL", "PT", "SE", "UK")
 
@@ -59,7 +59,7 @@ for(i in 1:3) {
   write.csv(g, file=paste("data/nuts/geo_nuts",i,".csv",sep=''),  row.names=F)
 }
   
-  # Load demographic data 
+# Load demographic data 
 for(year in output.years) {  
   
   cat("Computing ", year,"\n")
@@ -72,7 +72,7 @@ for(year in output.years) {
   
   d = d[ d$time <= year, ] # Remove future years
   
-  # excluding znes
+  # excluding zones
   for(p in exclude.levels) {
 	i = grepl(p, d$geo)
 	print(d[i,])
@@ -131,10 +131,17 @@ for(year in output.years) {
   
   available.years = tapply(y$time, y$country.code, function(x) length(unique(x)))
   if(! all(available.years == 1)) {
-    stop("Some country has different year available for different levels")
+    country = names(available.years[available.years > 1])
+    warning(paste(paste(country, collapse = ",")," has different year available for different levels"))
   }
   
   country.year = aggregate(time ~ country.code, data=y, min)
+  
+  i = country.year$time < max(country.year$time)
+  if(any(i)) {
+    cat(paste("Using ",country.year$time[i],"for country ", country.year$country.code[i]) ,"\n")
+  }
+  
   country.year = rename(country.year, list("time"="year.ref"))
   
   x1 = merge(x1, country.year, by='country.code', all.x=T)

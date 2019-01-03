@@ -1,6 +1,8 @@
 Import Geographic levels & Population data from EuroStat
 =========================================================
 
+Load Population data from Eurostat
+--------------------
 * Extract NUTS 2 levels & save it as CSV files using ";" separator
 
 Expected columns are
@@ -24,11 +26,23 @@ Expected columns are :
  * "Value" : Population for the strata (English notation, "," as thousands separator)
  * "Flag and Footnotes"
  
-Save it as CSV (";" sep) into data/eurostat/eurostat_population_nuts2.csv
+Save it as CSV ("," sep) into data/eurostat/ (with meaningfull name for example eurostat_population_nuts2_2015.csv)
+
+JSON REST Service
+http://ec.europa.eu/eurostat/wdds/rest/data/v2.1/json/en/demo_r_pjangroup?sex=T&precision=1&sinceTimePeriod=2009&age=TOTAL&age=UNK&age=Y10-14&age=Y15-19&age=Y20-24&age=Y25-29&age=Y30-34&age=Y35-39&age=Y40-44&age=Y45-49&age=Y5-9&age=Y50-54&age=Y55-59&age=Y60-64&age=Y65-69&age=Y70-74&age=Y75-79&age=Y80-84&age=Y_GE75&age=Y_GE80&age=Y_GE85&age=Y_LT5
+
+
+Extract population data for each year & geo levels
+--------------------------
+
+Edit eurotstat.r
+ * modify output.years, with list of years to extract
+ * population.file, with name of the population file saved from eurostat
 
 Run eurostat.r (in root dir)
+ 
  * Will generate all files in data/nuts
- * Will generate all population files
+ * Will generate all population files (data/population)
 	* total by for each geo levels
 	* age_group for each geo levels (country, nuts1, nuts2)
 	
@@ -36,3 +50,10 @@ For each year from 2011-2013, pick the last available census available in each c
 The year of the used census for each country will be registred in the "year_ref" column
 
 Some geo levels can be excluded (like overseas regions in France, counted in global population), since those population are not included in InfluenzaNet project yet.
+
+Create SQL for each year
+---------------------------
+
+> python bin/import-population.py [year] 
+Will create SQL command to import population data into Db for the given year
+
