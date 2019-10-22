@@ -1,7 +1,7 @@
 InfluenzaNet European Database
 ===============================
 
-This repo will contain script and base data used to create local version of european-level influenzanet DB
+This repo will contain script and base data used to create local version of european-level InfluenzaNet DB
 
 Requirements:
 
@@ -10,7 +10,7 @@ Requirements:
 - PostgreSQL 9.1
 
 To create initial data files:
-- R >= 2.13.2 (+ reshape2 & plyr)
+- R >= 3.2 (+ reshape2 & dplyr)
 
 How it works
 -------------
